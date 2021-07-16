@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, useState } from 'react';
 import { FiEdit3, FiTrash } from 'react-icons/fi';
 
 import { Container } from './styles';
@@ -14,17 +14,7 @@ class Food extends Component {
     };
   }
 
-  toggleAvailable = async () => {
-    const { food } = this.props;
-    const { isAvailable } = this.state;
 
-    await api.put(`/foods/${food.id}`, {
-      ...food,
-      available: !isAvailable,
-    });
-
-    this.setState({ isAvailable: !isAvailable });
-  }
 
   setEditingFood = () => {
     const { food, handleEditFood } = this.props;
@@ -37,7 +27,28 @@ class Food extends Component {
     const { food, handleDelete } = this.props;
 
     return (
-      <Container available={isAvailable}>
+      
+    );
+  }
+};
+
+export default Food;
+
+export const Food = ({food}) => {
+  const [isAvailable, setIsAvailable] = useState<boolean>()
+
+  const toggleAvailable = async () => {
+
+    await api.put(`/foods/${food.id}`, {
+      ...food,
+      available: !isAvailable,
+    });
+
+    setIsAvailable(!isAvailable);
+  }
+
+  return (
+    <Container available={isAvailable}>
         <header>
           <img src={food.image} alt={food.name} />
         </header>
@@ -85,8 +96,5 @@ class Food extends Component {
           </div>
         </section>
       </Container>
-    );
-  }
-};
-
-export default Food;
+  )
+}
